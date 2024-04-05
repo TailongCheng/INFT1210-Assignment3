@@ -1,0 +1,24 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/assignment2-418411/cheng-repo/flaskapp:${COMMIT_SHA}', '.']
+  # Push the Docker image to the artifact registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/assignment2-418411/cheng-repo/flaskapp:${COMMIT_SHA}']
+  # Deploy the Docker container to Google Compute Engine instance
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute instances update-container vm-container \
+          --container-image us-central1-docker.pkg.dev/assignment2-418411/cheng-repo/flaskapp:${COMMIT_SHA} \
+          --zone us-central1-a
+options:
+  # Set defaultLogsBucketBehavior to REGIONAL_USER_OWNED_BUCKET
+  # defaultLogsBucket: 'gs://your-build-logs-bucket' # Replace with your build logs bucket
+  defaultLogsBucketBehavior: 'REGIONAL_USER_OWNED_BUCKET'
+
+images:
+# Store images in Google Artifact Registry
+  - us-central1-docker.pkg.dev/assignment2-418411/cheng-repo/flaskapp:${COMMIT_SHA}
