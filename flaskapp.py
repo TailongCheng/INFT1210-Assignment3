@@ -10,4 +10,4 @@ def hello_cloud():
 
 # Without port=8080, the docker container ip works, but GCP VM local ip and external ip doesnt work.
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=5000)
